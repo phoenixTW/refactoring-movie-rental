@@ -8,7 +8,6 @@ import static org.junit.Assert.*;
 public class CustomerTest {
 
     Customer customer;
-    Rental rental;
     Movie sholey;
     Movie bahubali;
 
@@ -17,11 +16,16 @@ public class CustomerTest {
         customer = new Customer("Vikas");
         sholey = new Movie("Sholey", Movie.REGULAR);
         bahubali = new Movie("Bahubali", Movie.NEW_RELEASE);
-        rental = new Rental(sholey, 2);
+
     }
 
     @Test
+    public void testShouldGiveCustomerName () {
+        assertEquals("Vikas", customer.getName());
+    }
+    @Test
     public void testStatementGivesTheCurrentStatusOfTheCustomerForRegularMovie () throws Exception {
+        Rental rental = new Rental(sholey, 2);
         customer.addRental(rental);
         String expectedStatement = "Rental Record for Vikas\n"
                 + "\tSholey\t2.0\n"
@@ -53,6 +57,7 @@ public class CustomerTest {
 
     @Test
     public void testStatementGivesTheCurrentStatusForDiffrentTypeOfMovies () {
+        Rental rental = new Rental(sholey, 2);
         Movie jungleBook = new Movie("Jungle Book", Movie.CHILDRENS);
         customer.addRental(new Rental(jungleBook, 5));
         customer.addRental(new Rental(bahubali, 5));
