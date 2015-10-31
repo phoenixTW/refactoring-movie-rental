@@ -4,48 +4,58 @@ import java.util.List;
 
 public class Customer {
 
-    private String _name;
-    private List<Rental> _rentals = new ArrayList<Rental>();
+    private String name;
+    private List<Rental> rentals = new ArrayList<Rental>();
 
     public Customer(String name) {
-        _name = name;
+        this.name = name;
     }
 
-    public void addRental(Rental arg) {
-        _rentals.add(arg);
-    }
-
-    public String getName() {
-        return _name;
+    public void addRental(Rental rental) {
+        rentals.add(rental);
     }
 
     public String statement() {
-        double totalAmount = 0;
-        int frequentRenterPoints = 0;
-            String result = "Rental Record for " + getName() + "\n";
+        double totalAmount = getTotalAmountFor(rentals);
+        int frequentRenterPoints = getFrequentRenterPoints(rentals);
+        String header = getHeaderFor(name);
+        String result = "";
 
-        for (Rental rental: _rentals) {
-            double rentalAmount = 0;
-
-            //determine amounts for each line
-            rentalAmount += getAmountFor(rental);
-
-            // add frequent renter points
-            frequentRenterPoints++;
-            // add bonus for a two day new release rental
-            if ((rental.getMovie().getPriceCode() == Movie.NEW_RELEASE) && rental.getDaysRented() > 1)
-                frequentRenterPoints++;
-
-            // show figures for this rental
-            result += "\t" + rental.getMovie().getTitle() + "\t" + String.valueOf(rentalAmount) + "\n";
-            totalAmount += rentalAmount;
+        for (Rental rental: rentals) {
+            result += "\t" + rental.getMovie().getTitle() + "\t" + getAmountFor(rental) + "\n";
         }
 
-        // add footer lines
-        result += "Amount owed is " + String.valueOf(totalAmount) + "\n";
-        result += "You earned " + String.valueOf(frequentRenterPoints) + " frequent renter points";
+        return header + result + getFooter(totalAmount, frequentRenterPoints);
+    }
 
-        return result;
+    private double getTotalAmountFor(List<Rental> rentals) {
+        double totalAmount = 0;
+
+        for (Rental rental : rentals)
+            totalAmount += getAmountFor(rental);
+
+        return totalAmount;
+    }
+
+    private int getFrequentRenterPoints(List<Rental> rentals) {
+        int frequentRenterPoints = 0;
+
+        for (Rental rental : rentals) {
+            if ((rental.getMovie().getPriceCode() == Movie.NEW_RELEASE) && rental.getDaysRented() > 1)
+                frequentRenterPoints ++;
+            frequentRenterPoints++;
+        }
+        return frequentRenterPoints;
+    }
+
+    private String getHeaderFor(String name) {
+        return "Rental Record for " + name + "\n";
+    }
+
+    private String getFooter(double totalAmount, int frequentRenterPoints) {
+        return "Amount owed is " + String.valueOf(totalAmount) + "\n" +
+                "You earned " + String.valueOf(frequentRenterPoints) +
+                " frequent renter points";
     }
 
     private double getAmountFor(Rental rental) {

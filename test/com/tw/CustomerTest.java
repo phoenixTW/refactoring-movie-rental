@@ -20,10 +20,6 @@ public class CustomerTest {
     }
 
     @Test
-    public void testShouldGiveCustomerName () {
-        assertEquals("Vikas", customer.getName());
-    }
-    @Test
     public void testStatementGivesTheCurrentStatusOfTheCustomerForRegularMovie () throws Exception {
         Rental rental = new Rental(sholey, 2);
         customer.addRental(rental);
